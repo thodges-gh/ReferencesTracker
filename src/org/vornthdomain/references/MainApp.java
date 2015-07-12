@@ -3,16 +3,30 @@ package org.vornthdomain.references;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.vornthdomain.references.model.Person;
+import org.vornthdomain.references.view.PersonOverviewController;
 
-public class Main extends Application {
+public class MainApp extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+
+    private ObservableList<Person> personData = FXCollections.observableArrayList();
+
+    public MainApp() {
+        personData.add(new Person("Thomas", "Hodges"));
+    }
+
+    public ObservableList<Person> getPersonData() {
+        return personData;
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -31,7 +45,7 @@ public class Main extends Application {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/RootLayout.fxml"));
+            loader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
             rootLayout = loader.load();
 
             // Show the scene containing the root layout.
@@ -50,11 +64,15 @@ public class Main extends Application {
         try {
             // Load person overview.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/PersonOverview.fxml"));
+            loader.setLocation(MainApp.class.getResource("view/PersonOverview.fxml"));
             AnchorPane personOverview = loader.load();
 
             // Set person overview into the center of root layout.
             rootLayout.setCenter(personOverview);
+
+            PersonOverviewController controller = loader.getController();
+            controller.setMainApp(this);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
